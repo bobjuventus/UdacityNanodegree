@@ -6,7 +6,7 @@
 
 **The goals / steps of this project are the following:**  
 
-###Training / Calibration
+### Training / Calibration
 
 **Notice: the ipynb file is under `/RoboND-Rover-Project` folder, not under `/code` folder. All the images have been displayed in the notebook.**  
 
