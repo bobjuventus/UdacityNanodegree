@@ -40,21 +40,28 @@ class RoverState():
     def __init__(self):
         self.start_time = None # To record the start time of navigation
         self.total_time = None # To record total duration of naviagation
+        self.start_back_time = None # The time the rover starts in back mode
+        self.start_forward_time = 0 # The time the rover starts in forward mode
         self.img = None # Current camera image
         self.pos = None # Current position (x, y)
+        self.pos_hist = [(None, None)] * 100 # Store the last 100 pos
         self.yaw = None # Current yaw angle
+        self.yaw_hist = [None] * 100 # Store the last 100 yaws
         self.pitch = None # Current pitch angle
         self.roll = None # Current roll angle
         self.vel = None # Current velocity
-        self.steer = 0 # Current steering angle
+        self.vel_hist = [None] * 100 # Store the last 100 velocities
+        self.steer = 0 # Current steering angle, in DEGREES
         self.throttle = 0 # Current throttle value
         self.brake = 0 # Current brake value
-        self.nav_angles = None # Angles of navigable terrain pixels
+        self.nav_angles = None # Angles of navigable terrain pixels, in rads
         self.nav_dists = None # Distances of navigable terrain pixels
+        self.mean_angles = None
         self.ground_truth = ground_truth_3d # Ground truth worldmap
         self.mode = 'forward' # Current mode (can be forward or stop)
         self.throttle_set = 0.2 # Throttle setting when accelerating
         self.brake_set = 10 # Brake setting when braking
+        self.scale = 10 # Rover centric to worldmap scale
         # The stop_forward and go_forward fields below represent total count
         # of navigable terrain pixels.  This is a very crude form of knowing
         # when you can keep going and when you should stop.  Feel free to
@@ -62,6 +69,8 @@ class RoverState():
         self.stop_forward = 50 # Threshold to initiate stopping
         self.go_forward = 500 # Threshold to go forward again
         self.max_vel = 2 # Maximum velocity (meters/second)
+        self.nav_dists_thres = 100 # Nav_dists threshold, over which means super accessible
+        self.area_thres = 50000 # Area threshold, to eliminate any noise
         # Image output from perception step
         # Update this image to display your intermediate analysis steps
         # on screen in autonomous mode
@@ -99,12 +108,13 @@ def telemetry(sid, data):
         fps = frame_counter
         frame_counter = 0
         second_counter = time.time()
-    print("Current FPS: {}".format(fps))
+    # print("Current FPS: {}".format(fps))
 
     if data:
         global Rover
         # Initialize / update Rover with current telemetry
         Rover, image = update_rover(Rover, data)
+        print("Rover.mode is: ", Rover.mode)
 
         if np.isfinite(Rover.vel):
 
