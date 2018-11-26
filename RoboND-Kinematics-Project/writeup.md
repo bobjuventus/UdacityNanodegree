@@ -54,7 +54,7 @@ For individual transformation matrices, they all follow the same format. As a re
 
 ![alt text][DH_Transform_between_frames]
 
-For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is <a href="https://www.codecogs.com/eqnedit.php?latex=R_{xyz}&space;=&space;R_zR_yR_xR_{corr}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?R_{xyz}&space;=&space;R_zR_yR_xR_{corr}" title="R_{xyz} = R_zR_yR_xR_{corr}" /></a>.
+For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is <img src="https://latex.codecogs.com/gif.latex?R_{xyz}&space;=&space;R_zR_yR_xR_{corr}" title="R_{xyz} = R_zR_yR_xR_{corr}" />.
 
 Specifically,
 
@@ -62,23 +62,23 @@ Specifically,
 
 where q1, q2 and q3 represent roll, pitch and yaw from EE pose.
 
-For the translation part, it's simply <a href="https://www.codecogs.com/eqnedit.php?latex=[px,&space;py,&space;pz]^T" target="_blank"><img src="https://latex.codecogs.com/gif.latex?[px,&space;py,&space;pz]^T" title="[px, py, pz]^T" /></a>, which is from the EE pose as well. Putting it together, we get
+For the translation part, it's simply <img src="https://latex.codecogs.com/gif.latex?[px,&space;py,&space;pz]^T" title="[px, py, pz]^T" />, which is from the EE pose as well. Putting it together, we get
 
 ![alt text][EE]
 
 #### 4. Decouple Inverse Kinematics problem into Inverse Position Kinematics and inverse Orientation Kinematics; doing so derive the equations to calculate all individual joint angles.
 
 These steps are involved:
-* Get coordinates of wrist center <a href="https://www.codecogs.com/eqnedit.php?latex=t_{WC}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" /></a>
-* Calculate <a href="https://www.codecogs.com/eqnedit.php?latex=\theta_{1-3}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\theta_{1-3}" title="\theta_{1-3}" /></a> using geometry information
-* Get <a href="https://www.codecogs.com/eqnedit.php?latex=R_{3->6}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?R_{3->6}" title="R_{3->6}" /></a> symbolic matrix from transformation matrix <a href="https://www.codecogs.com/eqnedit.php?latex=R_{3->4}R_{4->5}R_{5->6}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?R_{3->4}R_{4->5}R_{5->6}" title="R_{3->4}R_{4->5}R_{5->6}" /></a> and its actual value matrix from <img src="https://latex.codecogs.com/gif.latex?R_{0->6}" title="R_{0->6}" /> and \[R_{0->3}\]
-* Compare the symbolic matrix and value matrix to calculate $\theta_{4-6}$
+* Get coordinates of wrist center <img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" />
+* Calculate <img src="https://latex.codecogs.com/gif.latex?\theta_{1-3}" title="\theta_{1-3}" /> using geometry information
+* Get <img src="https://latex.codecogs.com/gif.latex?R_{3->6}" title="R_{3->6}" /> symbolic matrix from transformation matrix <img src="https://latex.codecogs.com/gif.latex?R_{3->4}R_{4->5}R_{5->6}" title="R_{3->4}R_{4->5}R_{5->6}" /> and its actual value matrix from <img src="https://latex.codecogs.com/gif.latex?R_{0->6}" title="R_{0->6}" /> and <img src="https://latex.codecogs.com/gif.latex?R_{0->3}" title="R_{0->3}" />
+* Compare the symbolic matrix and value matrix to calculate <img src="https://latex.codecogs.com/gif.latex?\theta_{4-6}" title="\theta_{4-6}" />
 
-The derivation of $\theta_2$ and $\theta_3$ are below. $\theta_1$ is trivial. $\theta_{4-6}$ are from comparing the symbolic matrix and the value matrix.
+The derivation of <img src="https://latex.codecogs.com/gif.latex?\theta_2" title="\theta_2" /> and <img src="https://latex.codecogs.com/gif.latex?\theta_3" title="\theta_3" /> are below. <img src="https://latex.codecogs.com/gif.latex?\theta_1" title="\theta_1" /> is trivial. <img src="https://latex.codecogs.com/gif.latex?\theta_{4-6}" title="\theta_{4-6}" /> are from comparing the symbolic matrix and the value matrix.
 
 ![alt text][Derivation]
 
-The detailed codes for wrist center $t_{WC}$ and all the angles are here:
+The detailed codes for wrist center <img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" /> and all the angles are here:
 
 ![alt text][theta]
 
@@ -92,8 +92,8 @@ Most of the codes have been snipped and attached above. Here is the summary of t
 2. Calculate all the transformation matrices between each DH frames
 3. Define the extrinsic rotation from base link to EE link and the correction matrix between DH and URDF frame. Later we can plug in the value from the EE orientation to get the value rotation matrix.
 4. From the EE position we can get the EE position in base link. Combined with the rotation matrix, we can get the WC (wrist center) position.
-5. $\theta_{1-3}$ can be calculated using the WC position.
-6. Knowing $\theta_{1-3}$, we can get the value matrix of $R_{3->6} = R_{0->3}^{-1}R_{0->6}$. We also know the symbolic matrix from individual transform matrix from step 2. $\theta_{4-6}$ can then be calculated by comparing the sympolic matrix and the value matrix.
+5. <img src="https://latex.codecogs.com/gif.latex?\theta_{1-3}" title="\theta_{1-3}" /> can be calculated using the WC position.
+6. Knowing <img src="https://latex.codecogs.com/gif.latex?\theta_{1-3}" title="\theta_{1-3}" />, we can get the value matrix of <img src="https://latex.codecogs.com/gif.latex?R_{3->6}&space;=&space;R_{0->3}^{-1}R_{0->6}" title="R_{3->6} = R_{0->3}^{-1}R_{0->6}" />. We also know the symbolic matrix from individual transform matrix from step 2. <img src="https://latex.codecogs.com/gif.latex?\theta_{4-6}" title="\theta_{4-6}" /> can then be calculated by comparing the sympolic matrix and the value matrix.
 7. Populate all the $\theta$ values back to the response object.
 
 
