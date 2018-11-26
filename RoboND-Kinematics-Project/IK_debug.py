@@ -61,10 +61,6 @@ def test_code(test_case):
     
     ########################################################################################
     ##
-    # print(position.x)
-    roll, pitch, yaw = tf.transformations.euler_from_quaternion(test_case[0][1])
-    print(roll, pitch, yaw)
-
 
     ### Your FK code here
     # Create symbols
@@ -172,7 +168,7 @@ def test_code(test_case):
     t_EE = Matrix([px, py, pz])
     displacement = 0.303 * R_xyz_new * Matrix([0,0,1])
     t_WC = t_EE - displacement
-    print(t_WC)
+    # print(t_WC)
 
     # Get theta 1-3
 
@@ -194,16 +190,17 @@ def test_code(test_case):
     R0_3 = R0_3.evalf(subs={q1: theta1, q2: theta2, q3: theta3})
     R3_6_val = R0_3.inv("LU") * R_xyz_new
 
-    T3_6 = simplify(T3_4*T4_5*T5_6)
-    R3_6 = T3_6[0:3, 0:3]
-    print(R3_6)
-    print(R3_6_val)
+    # T3_6 = simplify(T3_4*T4_5*T5_6)
+    # R3_6 = T3_6[0:3, 0:3]
+    # print(R3_6)
+    # print(R3_6_val)
     # After printing the matrix, get equations like below:
     theta4 = float(atan2(R3_6_val[2,2], -R3_6_val[0,2]))
     theta5 = float(atan2(sqrt(R3_6_val[0,2]**2 + R3_6_val[2,2]**2), R3_6_val[1,2]))
     theta6 = float(atan2(-R3_6_val[1,1], R3_6_val[1,0])) 
 
     print("thetas are: ", theta1, theta2, theta3, theta4, theta5, theta6)
+    print("thetas_answers are: ", test_case[2])
 
     ## 
     ########################################################################################
@@ -277,6 +274,6 @@ def test_code(test_case):
 
 if __name__ == "__main__":
     # Change test case number for different scenarios
-    test_case_number = 1
+    test_case_number = 2
 
     test_code(test_cases[test_case_number])
