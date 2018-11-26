@@ -52,18 +52,18 @@ Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
 
 For individual transformation matrices, they all follow the same format. As a result, I am just pasting the equations defined in code instead of pluging in the detailed numbers.
 
-![alt text][DH_Transform_between_frames.png]
+![alt text][DH_Transform_between_frames]
 
 For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is $R_{xyz} = R_zR_yR_xR_{corr}$.
 
 Specifically,
 
-![alt text][rotation.png]
+![alt text][rotation]
 where q1, q2 and q3 represent roll, pitch and yaw from EE pose.
 
 For the translation part, it's simply $[px, py, pz]^T$, which is from the EE pose as well. Putting it together, we get
 
-![alt text][EE.png]
+![alt text][EE]
 
 #### 4. Decouple Inverse Kinematics problem into Inverse Position Kinematics and inverse Orientation Kinematics; doing so derive the equations to calculate all individual joint angles.
 
@@ -75,11 +75,11 @@ These steps are involved:
 
 The derivation of $\theta_2$ and $\theta_3$ are below. $\theta_1$ is trivial. $\theta_{4-6}$ are from comparing the symbolic matrix and the value matrix.
 
-![alt text][Derivation.jpg]
+![alt text][Derivation]
 
 The detailed codes for wrist center $t_{WC}$ and all the angles are here:
 
-![alt text][theta.png]
+![alt text][theta]
 
 ### Project Implementation
 
