@@ -16,7 +16,7 @@ from kuka_arm.srv import *
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from geometry_msgs.msg import Pose
 from mpmath import *
-from sympy import symbols, cos, sin, pi, simplify, sqrt, atan2
+from sympy import symbols, cos, sin, pi, simplify, sqrt, atan2, acos
 from sympy.matrices import Matrix
 
 
@@ -29,7 +29,7 @@ def handle_calculate_IK(req):
 
         ### Your FK code here
         # Create symbols
-    	q1, q2, q3, q4, q5, q6, q7 = symbols('q1:8')
+    	  q1, q2, q3, q4, q5, q6, q7 = symbols('q1:8')
         d1, d2, d3, d4, d5, d6, d7 = symbols('d1:8')
         a0, a1, a2, a3, a4, a5, a6 = symbols('a0:7')
         alpha0, alpha1, alpha2, alpha3, alpha4, alpha5, alpha6 = symbols('alpha0:7')
@@ -45,7 +45,7 @@ def handle_calculate_IK(req):
 	#
 	#
 	# Define Modified DH Transformation matrix
-    	T0_1 = Matrix([[             cos(q1),            -sin(q1),            0,              a0],
+    	  T0_1 = Matrix([[             cos(q1),            -sin(q1),            0,              a0],
                        [ sin(q1)*cos(alpha0), cos(q1)*cos(alpha0), -sin(alpha0), -sin(alpha0)*d1],
                        [ sin(q1)*sin(alpha0), cos(q1)*sin(alpha0),  cos(alpha0),  cos(alpha0)*d1],
                        [                   0,                   0,            0,               1]])
@@ -114,7 +114,7 @@ def handle_calculate_IK(req):
 
         # Initialize service response
         joint_trajectory_list = []
-        print("len of req.poses are: ", len(req.poses))
+        # print("len of req.poses are: ", len(req.poses))
         for x in xrange(0, len(req.poses)):
             # IK code starts here
             joint_trajectory_point = JointTrajectoryPoint()
