@@ -16,9 +16,12 @@
 
 [//]: # (Image References)
 
-[image1]: ./misc_images/misc1.png
-[image2]: ./misc_images/misc3.png
-[image3]: ./misc_images/misc2.png
+[DH]: ./misc_images/DH.png
+[DH_Transform_between_frames]: ./misc_images/DH_Transform_between_frames.png
+[rotation]: ./misc_images/rotation.png
+[EE]: ./misc_images/EE.png
+[Derivation]: ./misc_images/Derivation.png
+[theta]: ./misc_images/theta.png
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -31,9 +34,7 @@
 
 Here is the screen shot of the frames' setup using DH parameters.
 
-![DH.png](:storage/3641ecc9-0c89-44d9-b57a-c3eee056bef1/85cf7150.png)
-
-![alt text][image1]
+![alt text][DH]
 
 #### 2. Below is the DH-parameter table created according to this frame definition and the URDF file.
 
@@ -51,18 +52,18 @@ Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
 
 For individual transformation matrices, they all follow the same format. As a result, I am just pasting the equations defined in code instead of pluging in the detailed numbers.
 
-![DH_Transform_between_frames.png](:storage/3641ecc9-0c89-44d9-b57a-c3eee056bef1/c4c944b4.png)
+![alt text][DH_Transform_between_frames.png]
 
 For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is $R_{xyz} = R_zR_yR_xR_{corr}$.
 
 Specifically,
 
-![rotation.png](:storage/3641ecc9-0c89-44d9-b57a-c3eee056bef1/4a91cad1.png)
+![alt text][rotation.png]
 where q1, q2 and q3 represent roll, pitch and yaw from EE pose.
 
 For the translation part, it's simply $[px, py, pz]^T$, which is from the EE pose as well. Putting it together, we get
 
-![EE.png](:storage/3641ecc9-0c89-44d9-b57a-c3eee056bef1/f4e9b713.png)
+![alt text][EE.png]
 
 #### 4. Decouple Inverse Kinematics problem into Inverse Position Kinematics and inverse Orientation Kinematics; doing so derive the equations to calculate all individual joint angles.
 
@@ -74,13 +75,11 @@ These steps are involved:
 
 The derivation of $\theta_2$ and $\theta_3$ are below. $\theta_1$ is trivial. $\theta_{4-6}$ are from comparing the symbolic matrix and the value matrix.
 
-![Derivation.jpg](:storage/3641ecc9-0c89-44d9-b57a-c3eee056bef1/c5d65828.jpg)
+![alt text][Derivation.jpg]
 
 The detailed codes for wrist center $t_{WC}$ and all the angles are here:
 
-![theta.png](:storage/3641ecc9-0c89-44d9-b57a-c3eee056bef1/6b883a7e.png)
-
-![alt text][image2]
+![alt text][theta.png]
 
 ### Project Implementation
 
@@ -114,10 +113,5 @@ Going further...
 #### 2. Results.
 
 I was able to perform the pick and place movement 100%, although the object is not physically gripped. Below are some screenshots at different steps.
-
-
-
-And just for fun, another example image:
-![alt text][image3]
 
 
