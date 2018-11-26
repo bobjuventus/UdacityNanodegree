@@ -20,7 +20,7 @@
 [DH_Transform_between_frames]: ./misc_images/DH_Transform_between_frames.png
 [rotation]: ./misc_images/rotation.png
 [EE]: ./misc_images/EE.png
-[Derivation]: ./misc_images/Derivation.png
+[Derivation]: ./misc_images/Derivation.jpg
 [theta]: ./misc_images/theta.png
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
