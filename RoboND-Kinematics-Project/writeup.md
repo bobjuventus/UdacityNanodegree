@@ -54,7 +54,7 @@ For individual transformation matrices, they all follow the same format. As a re
 
 ![alt text][DH_Transform_between_frames]
 
-For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is $R_{xyz} = R_zR_yR_xR_{corr}$ <a href="https://www.codecogs.com/eqnedit.php?latex=$R_{xyz}&space;=&space;R_zR_yR_xR_{corr}$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$R_{xyz}&space;=&space;R_zR_yR_xR_{corr}$" title="$R_{xyz} = R_zR_yR_xR_{corr}$" /></a>.
+For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is <a href="https://www.codecogs.com/eqnedit.php?latex=R_{xyz}&space;=&space;R_zR_yR_xR_{corr}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?R_{xyz}&space;=&space;R_zR_yR_xR_{corr}" title="R_{xyz} = R_zR_yR_xR_{corr}" /></a>.
 
 Specifically,
 
@@ -62,16 +62,16 @@ Specifically,
 
 where q1, q2 and q3 represent roll, pitch and yaw from EE pose.
 
-For the translation part, it's simply $[px, py, pz]^T$, which is from the EE pose as well. Putting it together, we get
+For the translation part, it's simply <a href="https://www.codecogs.com/eqnedit.php?latex=[px,&space;py,&space;pz]^T" target="_blank"><img src="https://latex.codecogs.com/gif.latex?[px,&space;py,&space;pz]^T" title="[px, py, pz]^T" /></a>, which is from the EE pose as well. Putting it together, we get
 
 ![alt text][EE]
 
 #### 4. Decouple Inverse Kinematics problem into Inverse Position Kinematics and inverse Orientation Kinematics; doing so derive the equations to calculate all individual joint angles.
 
 These steps are involved:
-* Get coordinates of wrist center $t_{WC}$
-* Calculate $\theta_{1-3}$ using geometry information
-* Get $R_{3->6}$ symbolic matrix from transformation matrix $R_{3->4}R_{4->5}R_{5->6}$ and its actual value matrix from $R_{0->6}$ and $R_{0->3}$
+* Get coordinates of wrist center <a href="https://www.codecogs.com/eqnedit.php?latex=t_{WC}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" /></a>
+* Calculate <a href="https://www.codecogs.com/eqnedit.php?latex=\theta_{1-3}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\theta_{1-3}" title="\theta_{1-3}" /></a> using geometry information
+* Get <a href="https://www.codecogs.com/eqnedit.php?latex=R_{3->6}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?R_{3->6}" title="R_{3->6}" /></a> symbolic matrix from transformation matrix <a href="https://www.codecogs.com/eqnedit.php?latex=R_{3->4}R_{4->5}R_{5->6}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?R_{3->4}R_{4->5}R_{5->6}" title="R_{3->4}R_{4->5}R_{5->6}" /></a> and its actual value matrix from <img src="https://latex.codecogs.com/gif.latex?R_{0->6}" title="R_{0->6}" /> and \[R_{0->3}\]
 * Compare the symbolic matrix and value matrix to calculate $\theta_{4-6}$
 
 The derivation of $\theta_2$ and $\theta_3$ are below. $\theta_1$ is trivial. $\theta_{4-6}$ are from comparing the symbolic matrix and the value matrix.
