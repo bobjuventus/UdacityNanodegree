@@ -133,12 +133,12 @@ _Reached target location_
 _Moving to the drop-off location (again terminal outputs the angles of joints)_
 ![alt text][step3]
 
-_Reached drop-off location_
+_Reached drop-off location (no object on gripper though)_
 ![alt text][step4]
 
 #### 3. Verification of FK.
 
 In `IK_debug.py`, I have tested all 4 test cases. Here are the results.
 * For <img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" />, errors are all very small.
-* For thetas, some of them are very small, but some of them are way off. This is due to multiple IK solution given an EE pose.
+* For thetas, some of them are very small, but some of them are way off. This is due to multiple IK solutions given an EE pose.
 * For FK verification, errors are all zero, so FK is validated. 
