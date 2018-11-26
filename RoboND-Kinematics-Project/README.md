@@ -1,6 +1,8 @@
 [![Udacity - Robotics NanoDegree Program](https://s3-us-west-1.amazonaws.com/udacity-robotics/Extra+Images/RoboND_flag.png)](https://www.udacity.com/robotics)
 # Robotic arm - Pick & Place project
 
+## This README is a general guideline, please see [writeup.md](https://github.com/bobjuventus/UdacityNanodegree/blob/master/RoboND-Kinematics-Project/writeup.md) for my writeup.
+
 Make sure you are using robo-nd VM or have Ubuntu+ROS installed locally.
 
 ### One time Gazebo setup step:
