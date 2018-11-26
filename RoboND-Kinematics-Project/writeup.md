@@ -94,13 +94,13 @@ Most of the codes have been snipped and attached above. Here is the summary of t
 4. From the EE position we can get the EE position in base link. Combined with the rotation matrix, we can get the WC (wrist center) position.
 5. <img src="https://latex.codecogs.com/gif.latex?\theta_{1-3}" title="\theta_{1-3}" /> can be calculated using the WC position.
 6. Knowing <img src="https://latex.codecogs.com/gif.latex?\theta_{1-3}" title="\theta_{1-3}" />, we can get the value matrix of <img src="https://latex.codecogs.com/gif.latex?R_{3->6}&space;=&space;R_{0->3}^{-1}R_{0->6}" title="R_{3->6} = R_{0->3}^{-1}R_{0->6}" />. We also know the symbolic matrix from individual transform matrix from step 2. <img src="https://latex.codecogs.com/gif.latex?\theta_{4-6}" title="\theta_{4-6}" /> can then be calculated by comparing the sympolic matrix and the value matrix.
-7. Populate all the $\theta$ values back to the response object.
+7. Populate all the <img src="https://latex.codecogs.com/gif.latex?\theta" title="\theta" /> values back to the response object.
 
 
 Useful things that I found and can be used in the future:
 * All the matrix definitions should be outside the for loop to reduce runtime
 * Be careful with the `atan2` usage. It matters where you put the negative sign
-* I need to convert $\theta$ to float format explicitly with `float`, otherwise it keeps symbolic (like the usage of `pi`)
+* I need to convert <img src="https://latex.codecogs.com/gif.latex?\theta" title="\theta" /> to float format explicitly with `float`, otherwise it keeps symbolic (like the usage of `pi`)
 * When debugging, there is more than one solution for IK. So don't get throw off if your solution is different from the suggested one. Do a FK to verify.
 * This approach of getting a lot of EE poses along the way and calculate IK for each of the pose works, but is fairly computational intensive and causing awkward jerking motion. The MoveIt! package does generate a very smooth motion. I am interested to find out how MoveIt! solves the motion planning problem in the future.
 
