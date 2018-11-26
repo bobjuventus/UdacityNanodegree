@@ -22,6 +22,11 @@
 [EE]: ./misc_images/EE.png
 [Derivation]: ./misc_images/Derivation.jpg
 [theta]: ./misc_images/theta.png
+[step1]: ./misc_images/step1.png
+[step2]: ./misc_images/step2.png
+[step3]: ./misc_images/step3.png
+[step4]: ./misc_images/step4.png
+[grip]: ./misc_images/grip.png
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -107,6 +112,10 @@ Useful things that I found and can be used in the future:
 Things that I could not fix at the end:
 * There is one thing I could not fix at the end, that is the object can not be gripped. The gripper closes for a solid 5 seconds (`ros::Duration(5.0).sleep()` is in place) but slides off the object when retriving. It can be seen that the object shakes a little bit when gripping, so contact is made. I also looked at the Gazebo grasp plugin, but did not mess with th e parameters there. As a result, I can only see the trajectory, but not see the robot actually gripping and dropping object.
 
+A prove that the gripper actually grips the object.
+
+![alt text][grip]
+
 Going further...
 * I would like to study MoveIt! package to see how it achieves such smooth motion, like RRT* algorithm and other algorithms.
 * Debug that object slipping issue above. 
@@ -115,4 +124,21 @@ Going further...
 
 I was able to perform the pick and place movement 100%, although the object is not physically gripped. Below are some screenshots at different steps.
 
+_Moving to the target location (terminal outputs the angles of joints)_
+![alt text][step1]
 
+_Reached target location_
+![alt text][step2]
+
+_Moving to the drop-off location (again terminal outputs the angles of joints)_
+![alt text][step3]
+
+_Reached drop-off location_
+![alt text][step4]
+
+#### 3. Verification of FK.
+
+In `IK_debug.py`, I have tested all 4 test cases. Here are the results.
+* For <img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" />, errors are all very small.
+* For thetas, some of them are very small, but some of them are way off. This is due to multiple IK solution given an EE pose.
+* For FK verification, errors are all zero, so FK is validated. 
