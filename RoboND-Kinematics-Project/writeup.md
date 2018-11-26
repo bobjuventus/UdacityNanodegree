@@ -54,11 +54,12 @@ For individual transformation matrices, they all follow the same format. As a re
 
 ![alt text][DH_Transform_between_frames]
 
-For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is $R_{xyz} = R_zR_yR_xR_{corr}$.
+For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is $R_{xyz} = R_zR_yR_xR_{corr}$ <a href="https://www.codecogs.com/eqnedit.php?latex=$R_{xyz}&space;=&space;R_zR_yR_xR_{corr}$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$R_{xyz}&space;=&space;R_zR_yR_xR_{corr}$" title="$R_{xyz} = R_zR_yR_xR_{corr}$" /></a>.
 
 Specifically,
 
 ![alt text][rotation]
+
 where q1, q2 and q3 represent roll, pitch and yaw from EE pose.
 
 For the translation part, it's simply $[px, py, pz]^T$, which is from the EE pose as well. Putting it together, we get
