@@ -203,6 +203,11 @@ def test_code(test_case):
     # R3_6 = R0_3.inv("LU") * R_xyz_new # This .inv function somehow returns funky value at
     # certain joint angles' combinations!!! Caused me a few days to find this bug!
     R3_6 = R0_3.transpose() * R_xyz_new
+
+    # R3_6_symbol = simplify(T3_4[0:3, 0:3]*T4_5[0:3, 0:3]*T5_6[0:3, 0:3])
+    # print("R3_6 value matrix is: ", R3_6)
+    # print("R3_6 symbolic matrix is: ", R3_6_symbol)
+
     
     # theta4 = float(atan2(R3_6[2,2], -R3_6[0,2]))
     # theta5 = float(atan2(sqrt(R3_6[0,2]**2 + R3_6[2,2]**2), R3_6[1,2]))

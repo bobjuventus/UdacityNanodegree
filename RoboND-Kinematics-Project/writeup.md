@@ -27,6 +27,10 @@
 [step3]: ./misc_images/step3.png
 [step4]: ./misc_images/step4.png
 [grip]: ./misc_images/grip.png
+[DH_cal]: ./misc_images/DH_cal.jpg
+[matrices]: ./misc_images/matrices.png
+[T0_G]: ./misc_images/T0_G.png
+[theta4-6]: ./misc_images/theta4-6.png
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/972/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -53,11 +57,23 @@ Links | alpha(i-1) | a(i-1) | d(i-1) | theta(i)
 5->6 | - pi/2 | 0 | 0 | q6
 6->EE | 0 | 0 | 0.303 | 0
 
+The way I obtained this table is from the table below, combining the info in the URDF file and the DH frame definition.
+
+![alt text][DH_cal]
+
 #### 3. Using the DH parameter table derived above, create individual transformation matrices about each joint. In addition, also generate a generalized homogeneous transform between base_link and gripper_link using only end-effector(gripper) pose.
 
 For individual transformation matrices, they all follow the same format. As a result, I am just pasting the equations defined in code instead of pluging in the detailed numbers.
 
 ![alt text][DH_Transform_between_frames]
+
+To print out these individual transformation matrices after plugging in the DH table, we get:
+
+![alt text][matrices]
+
+Finally, from base_link to gripper_link, we multiply all the transformation matrices and get the below matrix. This can be used for FK calculation.
+
+![alt text][T0_G]
 
 For the homogeneous transform between base_link and gripper_link using the EE pose, break it into the rotation part and translation part. For the rotation part, it is <img src="https://latex.codecogs.com/gif.latex?R_{xyz}&space;=&space;R_zR_yR_xR_{corr}" title="R_{xyz} = R_zR_yR_xR_{corr}" />.
 
@@ -83,7 +99,11 @@ The derivation of <img src="https://latex.codecogs.com/gif.latex?\theta_2" title
 
 ![alt text][Derivation]
 
-The detailed codes for wrist center <img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" /> and all the angles are here:
+For <img src="https://latex.codecogs.com/gif.latex?\theta_{4-6}" title="\theta_{4-6}" />, we compare the value matrix calculated from the inverted matrix of <img src="https://latex.codecogs.com/gif.latex?R_{0->3}" title="R_{0->3}" /> and the symbolic matrix using the individual transformation matrix. We get:
+
+![alt text][theta4-6]
+
+By comparing these two matrices, we can get <img src="https://latex.codecogs.com/gif.latex?\theta_{4-6}" title="\theta_{4-6}" /> pretty easily by using cos and sin functions. The detailed codes for wrist center <img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" /> and all the angles are here:
 
 ![alt text][theta]
 
