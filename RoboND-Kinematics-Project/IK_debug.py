@@ -2,6 +2,7 @@ from sympy import *
 from time import time
 from mpmath import radians
 import tf
+import numpy as np
 
 '''
 Format of test case is [ [[EE position],[EE orientation as quaternions]],[WC location],[joint angles]]
@@ -22,7 +23,10 @@ test_cases = {1:[[[2.16135,-1.42635,1.55109],
                   [0.01735,-0.2179,0.9025,0.371016]],
                   [-1.1669,-0.17989,0.85137],
                   [-2.99,-0.12,0.94,4.06,1.29,-4.12]],
-              4:[],
+              4:[[[0.07054,2.5283,1.7396],
+                  [0.0564094,0.0115832,0.0248787,0.99803]],
+                  [-0.232,2.5128,1.7457],
+                  [1.66,0.57,-0.57,-1.55,1.61,1.69]], # this number 4 test case causes trouble to the .inv("LU") function
               5:[]}
 
 
@@ -146,19 +150,20 @@ def test_code(test_case):
     roll, pitch, yaw = tf.transformations.euler_from_quaternion(test_case[0][1])
 
 # simple R_xyz
-    R_x = Matrix([[ 1,              0,        0],
-              [ 0,        cos(q1), -sin(q1)],
-              [ 0,        sin(q1),  cos(q1)]])
+    r, p, y = symbols('r p y')
+    R_x = Matrix([[ 1,             0,        0],
+                [ 0,        cos(r),  -sin(r)],
+                [ 0,        sin(r),   cos(r)]])
 
-    R_y = Matrix([[ cos(q2),        0,  sin(q2)],
-              [       0,        1,        0],
-              [-sin(q2),        0,  cos(q2)]])
+    R_y = Matrix([[ cos(p),        0,   sin(p)],
+                [      0,        1,        0],
+                [-sin(p),        0,   cos(p)]])
 
-    R_z = Matrix([[ cos(q3), -sin(q3),        0],
-              [ sin(q3),  cos(q3),        0],
-              [ 0,              0,        1]])
+    R_z = Matrix([[ cos(y),  -sin(y),        0],
+                [ sin(y),   cos(y),        0],
+                [ 0,             0,        1]])
     R_xyz = simplify(R_z*R_y*R_x) * R_corr
-    R_xyz_new = R_xyz.evalf(subs={q1: roll, q2: pitch, q3: yaw})
+    R_xyz_new = R_xyz.evalf(subs={r: roll, p: pitch, y: yaw})
 
     ## Insert IK code here!
     # Get t_WC
@@ -185,22 +190,52 @@ def test_code(test_case):
     theta3_ang2 = acos((theta2_len1**2 + theta2_len3**2 - theta2_len2**2)/(2*theta2_len1*theta2_len3))
     theta3 = float(pi/2 - theta3_ang1 - theta3_ang2)
 
-    T0_3 = simplify(T0_1*T1_2*T2_3)
-    R0_3 = T0_3[0:3, 0:3]
+    T0_3 = T0_1*T1_2*T2_3
+    R0_3 = simplify(T0_3[0:3, 0:3])
+    # print("R0_3 is: ", R0_3)
+    # print("R0_3_inv is: ", R0_3.inv("LU"))
+    # print("Identify? ", R0_3*R0_3.transpose())
     R0_3 = R0_3.evalf(subs={q1: theta1, q2: theta2, q3: theta3})
-    R3_6_val = R0_3.inv("LU") * R_xyz_new
+    print("R0_3_inv is: ", R0_3.inv("LU"))
+    print("Is R0_3*R0_3_inv Identify? ", R0_3*R0_3.inv("LU"))
+    print("R0_3_transpose is: ", R0_3.transpose())
+    print("Is R0_3*R0_3_transpose Identisfy? ", R0_3*R0_3.transpose())
+    # R3_6 = R0_3.inv("LU") * R_xyz_new # This .inv function somehow returns funky value at
+    # certain joint angles' combinations!!! Caused me a few days to find this bug!
+    R3_6 = R0_3.transpose() * R_xyz_new
+    
+    # theta4 = float(atan2(R3_6[2,2], -R3_6[0,2]))
+    # theta5 = float(atan2(sqrt(R3_6[0,2]**2 + R3_6[2,2]**2), R3_6[1,2]))
+    # theta6 = float(atan2(-R3_6[1,1], R3_6[1,0])) 
+    # Euler angles from rotation matrix
+    theta5 = atan2(sqrt(R3_6[0,2]*R3_6[0,2] + R3_6[2,2]*R3_6[2,2]),R3_6[1,2])
+    
+    # select best solution based on theta5
+    if (theta5 > pi) :
+      theta4 = atan2(-R3_6[2,2], R3_6[0,2])
+      theta6 = atan2(R3_6[1,1],-R3_6[1,0])
+    else:
+      theta4 = atan2(R3_6[2,2], -R3_6[0,2])
+      theta6 = atan2(-R3_6[1,1],R3_6[1,0])
 
-    # T3_6 = simplify(T3_4*T4_5*T5_6)
-    # R3_6 = T3_6[0:3, 0:3]
-    # print(R3_6)
-    # print(R3_6_val)
-    # After printing the matrix, get equations like below:
-    theta4 = float(atan2(R3_6_val[2,2], -R3_6_val[0,2]))
-    theta5 = float(atan2(sqrt(R3_6_val[0,2]**2 + R3_6_val[2,2]**2), R3_6_val[1,2]))
-    theta6 = float(atan2(-R3_6_val[1,1], R3_6_val[1,0])) 
+    # print("thetas are: ", theta1, theta2, theta3, theta4, theta5, theta6)
+    # print("thetas_answers are: ", test_case[2])
 
-    print("thetas are: ", theta1, theta2, theta3, theta4, theta5, theta6)
-    print("thetas_answers are: ", test_case[2])
+
+    # T0_G = T0_1*T1_2*T2_3*T3_4*T4_5*T5_6*T6_G
+    # R0_G = T0_G[0:3, 0:3]
+    # print("R0_G = ", R0_G.evalf(subs={q1: test_case[2][0], q2: test_case[2][1], q3: test_case[2][2], q4: test_case[2][3], q5: test_case[2][4], q6: test_case[2][5]}))
+    # print("R_xyz_new = ", R_xyz_new)
+    # R0_1 = T0_1[0:3, 0:3]
+    # R1_2 = T1_2[0:3, 0:3]
+    # R2_3 = T2_3[0:3, 0:3]
+    # R3_4 = T3_4[0:3, 0:3]
+    # R4_5 = T4_5[0:3, 0:3]
+    # R5_6 = T5_6[0:3, 0:3]
+    # R6_G = T6_G[0:3, 0:3]
+    # R0_G_2 = R0_1*R1_2*R2_3*R3_4*R4_5*R5_6*R6_G
+    # print("R0_G_2 = ", R0_G_2.evalf(subs={q1: test_case[2][0], q2: test_case[2][1], q3: test_case[2][2], q4: test_case[2][3], q5: test_case[2][4], q6: test_case[2][5]}))
+    
 
     ## 
     ########################################################################################
@@ -210,12 +245,31 @@ def test_code(test_case):
     ## as the input and output the position of your end effector as your_ee = [x,y,z]
 
     ## (OPTIONAL) YOUR CODE HERE!
-    T0_G = simplify(T0_1*T1_2*T2_3*T3_4*T4_5*T5_6*T6_G)
-    T_total = simplify(T0_G*R_corrfull)
-    T_total = T_total.evalf(subs={q1: theta1, q2: theta2, q3: theta3, q4: theta4, q5: theta5, q6: theta6})
-    ee_x = T_total[0,3]
-    ee_y = T_total[1,3]
-    ee_z = T_total[2,3]
+    T0_G = T0_1*T1_2*T2_3*T3_4*T4_5*T5_6*T6_G
+    T_total = T0_G*R_corrfull
+
+    # theta = [1.6492984383739606, 0.5716978014131818, -0.5793901624802612, -1.57035623858063, -1.51816550552454 + pi, -1.48955250992195 + pi]
+    # T_total_new = T_total.evalf(subs={q1: theta[0], q2: theta[1], q3: theta[2], q4: theta[3], q5: theta[4], q6: theta[5]})
+    # testmatrix = tf.transformations.rotation_matrix(0.123, (1,2,3)) # dummy
+    # for i in range(3):
+    #   for j in range(3):
+    #     testmatrix[i, j] = T_total_new[i,j]
+    # ee_quaternion = tf.transformations.quaternion_from_matrix(testmatrix)
+    # print ("End effector quaternion is: ", ee_quaternion)
+    # theta = [1.7732494448353548, 0.6053240145123969, -0.5226839843707717, -0.380673616015223, 1.57005528338084, -1.5291905048909 + pi]
+    # T_total_new = T_total.evalf(subs={q1: theta[0], q2: theta[1], q3: theta[2], q4: theta[3], q5: theta[4], q6: theta[5]})
+    # testmatrix = tf.transformations.rotation_matrix(0.123, (1,2,3)) # dummy
+    # for i in range(3):
+    #   for j in range(3):
+    #     testmatrix[i, j] = T_total_new[i,j]
+    # ee_quaternion = tf.transformations.quaternion_from_matrix(testmatrix)
+    # print ("End effector quaternion is: ", ee_quaternion)
+
+
+    T_total_new = T_total.evalf(subs={q1: theta1, q2: theta2, q3: theta3, q4: theta4, q5: theta5, q6: theta6})
+    ee_x = T_total_new[0,3]
+    ee_y = T_total_new[1,3]
+    ee_z = T_total_new[2,3]
     # print(ee_x, ee_y, ee_z)
 
     ## End your code input for forward kinematics here!
@@ -264,16 +318,29 @@ def test_code(test_case):
         ee_y_e = abs(your_ee[1]-test_case[0][0][1])
         ee_z_e = abs(your_ee[2]-test_case[0][0][2])
         ee_offset = sqrt(ee_x_e**2 + ee_y_e**2 + ee_z_e**2)
+
+
+        testmatrix = tf.transformations.rotation_matrix(0.123, (1,2,3)) # dummy
+        for i in range(3):
+          for j in range(3):
+            testmatrix[i, j] = T_total_new[i,j]
+        # print ("testmatrix is: ", testmatrix)
+        # print ("T_total is: ", T_total)
+        ee_quaternion = tf.transformations.quaternion_from_matrix(testmatrix)
         print ("\nEnd effector error for x position is: %04.8f" % ee_x_e)
         print ("End effector error for y position is: %04.8f" % ee_y_e)
         print ("End effector error for z position is: %04.8f" % ee_z_e)
         print ("Overall end effector offset is: %04.8f units \n" % ee_offset)
-
+        print ("End effector quaternion calculation is: ", ee_quaternion)
+        print ("End effector quaternion solution is: ", test_case[0][1]) #using line 203 can see the difference between two quaternions
+        
+        # ee_testmatrix = tf.transformations.quaternion_from_matrix(testmatrix)
+        # print ("testmatrix quaternion is: ", ee_testmatrix)
 
 
 
 if __name__ == "__main__":
     # Change test case number for different scenarios
-    test_case_number = 1
+    test_case_number = 4
 
     test_code(test_cases[test_case_number])
