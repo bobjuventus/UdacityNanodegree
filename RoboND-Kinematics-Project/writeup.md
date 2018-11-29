@@ -2,7 +2,6 @@
 
 ---
 
-
 **Steps to complete the project:**  
 
 
@@ -123,7 +122,7 @@ Most of the codes have been snipped and attached above. Here is the summary of t
 
 
 Useful things that I found and can be used in the future:
-* **This one throws me off the most!** I got stuck at a bug for quite a while that involves the function `.inv("LU")`. For some reason, using this function to invert is not stable. Sometimes it returns the correct invert, but at certain angles (see test case 4 in IK_debug.py), it returns wrong invert. As a result, it gives me wrong <img src="https://latex.codecogs.com/gif.latex?\theta_{4-6}" title="\theta_{4-6}" /> time to time. Use `.transpose()` to calculate invert is much safer!
+* **This one throws me off the most!** I got stuck at a bug for quite a while that involves the function `.inv("LU")`. For some reason, using this function to invert is not stable. Sometimes it returns the correct invert, but at certain angles (see test case 4 in `IK_debug.py`), it returns wrong invert. As a result, it gives me wrong <img src="https://latex.codecogs.com/gif.latex?\theta_{4-6}" title="\theta_{4-6}" /> values time to time. Using `.transpose()` to calculate invert is much safer!
 * All the matrix definitions should be outside the for loop to reduce runtime
 * Be careful with the `atan2` usage. It matters where you put the negative sign
 * I need to convert <img src="https://latex.codecogs.com/gif.latex?\theta" title="\theta" /> to float format explicitly with `float`, otherwise it keeps symbolic (like the usage of `pi`)
@@ -163,4 +162,4 @@ _Reached drop-off location (no object on gripper though)_
 In `IK_debug.py`, I have tested all 4 test cases. Here are the results.
 * For <img src="https://latex.codecogs.com/gif.latex?t_{WC}" title="t_{WC}" />, errors are all very small.
 * For thetas, some of them are very small, but some of them are way off. This is due to multiple IK solutions given an EE pose.
-* For FK verification, I added verification of quaternion and a 4th test case. **Notice:**, when using `.transpose()` to calculate inverse function, all errors are very small. But when using `.inv("LU")` to calculate inverse function, the position errors are small but the quaternion errors are way off sometimes. Again, this error in quaternion is not always, only happens at certain joint angles. The 4th test case was included for this purpose, try out yourself!
+* For FK verification, I added verification of quaternion and a 4th test case. **Notice:** when using `.transpose()` to calculate inverse function, all errors are very small. But when using `.inv("LU")` to calculate inverse function, the position errors are small but the quaternion errors are way off sometimes. Again, this error in quaternion is not always, only happens at certain joint angles. The 4th test case was included for this purpose, try out yourself!
