@@ -52,11 +52,11 @@ Insert 3 pics...
 
 Explain stuff...
 
-![model1_prediction.png](:storage/028cf98f-3d99-4b61-80f6-3ba9d9e1986a/eac4aeb3.png)
+![alt text][model1_prediction]
 
-![model2_prediction.png](:storage/028cf98f-3d99-4b61-80f6-3ba9d9e1986a/cc3900a3.png)
+![alt text][model2_prediction]
 
-![model3_prediction.png](:storage/028cf98f-3d99-4b61-80f6-3ba9d9e1986a/eeb81f0d.png)
+![alt text][model3_prediction]
 
 #### 2. Read from pick list and output specific .yaml file.
 
