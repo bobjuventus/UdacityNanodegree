@@ -37,6 +37,9 @@
 [confusion1]: ./misc_images/confusion1.png
 [confusion2]: ./misc_images/confusion2.png
 [objectrecognition]: ./misc_images/objectrecognition.png
+[confusion_new1]: ./misc_images/confusion_new1.png
+[confusion_new2]: ./misc_images/confusion_new2.png
+[pickup_biscuit]: ./misc_images/pickup_biscuit.png
 
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/1067/view) Points
@@ -133,54 +136,43 @@ Finally, applying the model back to the clusters in `rviz`, we get:
 
 #### 1. Validating the segmentation and recognition from the previous exercises.
 
-Insert 3 pics...
+At this point, it's basically retraining the models on this larger dataset and try to get better prediction.
 
-Explain stuff...
+I gathered a training set of 50 point clouds per object and `using_hsv = True` to get better training results. After training, here are the confusion matrices.
+
+![alt text][confusion_new1]
+
+![alt text][confusion_new2]
+
+It can be seen the accuracy has been improved dramatically.
+
+Now applying the new model to the three test worlds, our results are:
 
 ![alt text][model1_prediction]
 
+3 out of 3 predicted correctly.
+
 ![alt text][model2_prediction]
+
+5 out of 5 predicted correctly.
 
 ![alt text][model3_prediction]
 
+7 out of 8 predicted correctly. Two `eraser` show up.
+
 #### 2. Read from pick list and output specific .yaml file.
 
-Output files are generated at ...
+`pr2.mover` was implemented to get the recognized object, retrieve its centroid position as `pick_pose` and tell the robot its `place_pose` from the input `.yaml` file. After placing the items, output `.yaml` files are generated to storage the `pick_pose` and `place_pose` for each object.
 
-Problem: `RRTConnect: Unable to sample any valid states for goal tree` 
+Here is a snapshot of pick and place in motion:
 
+![alt text][pickup_biscuit]
 
-### Project Implementation
+Please see the results in output `.yaml` files. It can be seen that in `output_3.yaml` file, there are 2 `eraser` objects. This is due to one of the objects was mis-classified as `eraser`.
 
-#### 1. Fill in the `IK_server.py` file with properly commented python code for calculating Inverse Kinematics based on previously performed Kinematic Analysis. Your code must guide the robot to successfully complete 8/10 pick and place cycles. Briefly discuss the code you implemented and your results. 
+### Useful things that I found and can be used in the future:
+* I first tried using `rbf` SVM kernel. It gives me equally good training accuracy but performs terribly at prediction. Whereas `linear` SVM kernel does both very well in training and prediction. This means most likely `rbf` SVM kernel overfits the training data.
 
-Most of the codes have been snipped and attached above. Here is the summary of the basic flow:
-
-1. Define the symbols and create the DH parameters
-2. Calculate all the transformation matrices between each DH frames
-3. Define the extrinsic rotation from base link to EE link and the correction matrix between DH and URDF frame. Later we can plug in the value from the EE orientation to get the value rotation matrix.
-4. From the EE position we can get the EE position in base link. Combined with the rotation matrix, we can get the WC (wrist center) position.
-5. $/theta_{1-3}$ can be calculated using the WC position.
-6. Knowing $/theta_{1-3}$, we can get the value matrix of $R_{3->6} = R_{0->3}^{-1}R_{0->6}$. We also know the symbolic matrix from individual transform matrix from step 2. $/theta_{4-6}$ can then be calculated by comparing the sympolic matrix and the value matrix.
-7. Populate all the $/theta$ values back to the response object.
-
-
-Useful things that I found and can be used in the future:
-* All the matrix definitions should be outside the for loop to reduce runtime
-* Be careful with the `atan2` usage. It matters where you put the negative sign
-* I need to convert $/theta$ to float format explicitly with `float`, otherwise it keeps symbolic (like the usage of `pi`)
-* When debugging, there is more than one solution for IK. So don't get throw off if your solution is different from the suggested one. Do a FK to verify.
-* This approach of getting a lot of EE poses along the way and calculate IK for each of the pose works, but is fairly computational intensive and causing awkward jerking motion. The MoveIt! package does generate a very smooth motion. I am interested to find out how MoveIt! solves the motion planning problem in the future.
-
-Things that I could not fix at the end:
-* There is one thing I could not fix at the end, that is the object can not be gripped. The gripper closes for a solid 5 seconds (`ros::Duration(5.0).sleep()` is in place) but slides off the object when retriving. It can be seen that the object shakes a little bit when gripping, so contact is made. I also looked at the Gazebo grasp plugin, but did not mess with th e parameters there. As a result, I can only see the trajectory, but not see the robot actually gripping and dropping object.
-
-Going further...
-* I would like to study MoveIt! package to see how it achieves such smooth motion, like RRT* algorithm and other algorithms.
-* Debug that object slipping issue above. 
-
-#### 2. Results.
-
-I was able to perform the pick and place movement 100%, although the object is not physically gripped. Below are some screenshots at different steps.
-
+### Things that I could not fix at the end:
+* I constantly get `RRTConnect: Unable to sample any valid states for goal tree` error when running `pick_place_project.launch`. It usually happens after the first item or first few items are picked, not sure what's causing it. Want to see if the grader has similar outcome.
 
