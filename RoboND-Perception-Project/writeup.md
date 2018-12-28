@@ -29,6 +29,15 @@
 [model1_prediction]: ./misc_images/model1_prediction.png
 [model2_prediction]: ./misc_images/model2_prediction.png
 [model3_prediction]: ./misc_images/model3_prediction.png
+[passthroughfilter]: ./misc_images/passthroughfilter.png
+[inliner]: ./misc_images/inliner.png
+[outliers]: ./misc_images/outliers.png
+[cluster]: ./misc_images/cluster.png
+[cluster_new]: ./misc_images/cluster_new.png
+[confusion1]: ./misc_images/confusion1.png
+[confusion2]: ./misc_images/confusion2.png
+[objectrecognition]: ./misc_images/objectrecognition.png
+
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/1067/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
@@ -40,9 +49,85 @@
 
 This is a separated exercise that the corresponding changes are implemented in this [repo folder](https://github.com/bobjuventus/UdacityNanodegree/tree/master/RoboND-Perception-Exercises).
 
-In general...
+All code snippets from these three exercises have been implemented in the Pick and Place project. Here I will include some important parameters chosen to achieve the best performance.
 
-Validate the codes in the next section...
+* Exercise 1
+
+\# Assign axis and range to the passthrough filter object in z axis.
+`filter_axis = 'z'`
+`passthrough.set_filter_field_name(filter_axis)`
+`axis_min = 0.6`
+`axis_max = 1.1`
+`passthrough.set_filter_limits(axis_min, axis_max)`
+`cloud_filtered = passthrough.filter()`
+
+These min and max values in the z direction filters out the non-interesting area.
+
+![alt text][passthroughfilter]
+
+For RANSAC, the Max distance for a point to be considered fitting the model was chosen to be `0.01`. The resulting point clouds for inliers and outliers look like, respectively:
+
+![alt text][inliner]
+
+![alt text][outliers]
+
+* Exercise 2
+
+For exercise 2, we need to set tolerances for different distance thresholds. In my case, this is what I used:
+
+`ec.set_ClusterTolerance(0.02)`
+`ec.set_MinClusterSize(20)`
+`ec.set_MaxClusterSize(1500)`
+
+After clustering, the objects are segmented quite well as:
+
+![alt text][cluster]
+
+However, notice there is a line of the edge of the table that was grouped as an object, a further pass_through filter in the `y` direction can be applied to take the edge off.
+
+After tuning the parameters, here is what needs to be applied:
+
+`filter_axis = 'y'`
+`passthrough.set_filter_field_name(filter_axis)`
+`axis_min = -2.0`
+`axis_max = -1.4`
+`passthrough.set_filter_limits(axis_min, axis_max)`
+`cloud_filtered = passthrough.filter()`
+
+After applying the pass_through filter in the `y` direction, we get rid of the table edge.
+
+![alt text][cluster_new]
+
+* Exercise 3
+
+In this exercise, the main functions need to be implemented are `compute_color_histograms()` and `compute_normal_histograms()` functions.
+
+In `features.py`, I implemented color histogram features as:
+
+`r_hist = np.histogram(channel\_1\_vals, bins=32, range=(0, 256))`
+`g_hist = np.histogram(channel\_2\_vals, bins=32, range=(0, 256))`
+`b_hist = np.histogram(channel\_3\_vals, bins=32, range=(0, 256))`
+
+and normal histogram features as:
+
+`x_hist = np.histogram(norm\_x\_vals, bins=32, range=(-1, 1))`
+`y_hist = np.histogram(norm\_y\_vals, bins=32, range=(-1, 1))`
+`z_hist = np.histogram(norm\_z\_vals, bins=32, range=(-1, 1))`
+
+After implementing these, we use `capture_feature.py` to capture 5 point clouds for each object and train with SVM. The training results are:
+
+![alt text][confusion1]
+
+![alt text][confusion2]
+
+It can be seen that the results are better than the untrained results for sure, but far from ideal. More training will be done in the next section.
+
+Finally, applying the model back to the clusters in `rviz`, we get:
+
+![alt text][objectrecognition]
+
+5 out of 6 objects were successfully recognized, more training should help.
+
 
 ### Pick and Place Setup
 
