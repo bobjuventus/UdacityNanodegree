@@ -2,6 +2,8 @@
 
 ## Deep Learning Project ##
 
+### My writeup report is in [Writeup.md](https://github.com/bobjuventus/UdacityNanodegree/blob/master/RoboND-DeepLearning-Project/writeup.md) ###
+
 In this project, you will train a deep neural network to identify and track a target in simulation. So-called “follow me” applications like this are key to many fields of robotics and the very same techniques you apply here could be extended to scenarios like advanced cruise control in autonomous vehicles or human-robot collaboration in industry.
 
 [image_0]: ./docs/misc/sim_screenshot.png
