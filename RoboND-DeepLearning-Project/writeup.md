@@ -73,7 +73,7 @@ Overall, the score is 0.402.
 
 ![alt text][evaluation]
 
-At the end, I tried to use the model `[model_weights1](https://github.com/bobjuventus/UdacityNanodegree/tree/master/RoboND-DeepLearning-Project/data/weights)` in simulator, and it works quite well! The quad follows the hero all the time once it locks on the hero.
+At the end, I tried to use the model [model_weights1](https://github.com/bobjuventus/UdacityNanodegree/tree/master/RoboND-DeepLearning-Project/data/weights) in simulator, and it works quite well! The quad follows the hero all the time once it locks on the hero.
 
 ### Things to do in the future:
 * The amount of data is obviously not enough for a high score. More data is needed, especially for detecting the target from far away scenerio. However, we have to be careful about the balance of data so we are not overfitting to a certain scenerio.
